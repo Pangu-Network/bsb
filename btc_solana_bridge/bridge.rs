@@ -1,46 +1,46 @@
-use substrate_interface::{SubstrateInterface, SubstrateClient};
+
 use solana_py::client::rpc_client::RpcClient;
 use solana_py::client::rpc_config::RpcSendTransactionConfig;
 use solana_py::signature::{Keypair, Signer};
 use std::error::Error;
 
-// 定义BitcoinClient结构体
+// Define BitcoinClient struct
 struct BitcoinClient {
     client: SubstrateClient,
 }
 
 impl BitcoinClient {
-    // 连接到Bitcoin节点
+    // Connect to a Bitcoin node
     fn connect(node_url: &str) -> Result<Self, Box<dyn Error>> {
         let client = SubstrateClient::new(node_url)?;
         Ok(BitcoinClient { client })
     }
 
-    // 发送交易
+    // Send transaction
     fn send_transaction(&self, transaction: String) -> Result<bool, Box<dyn Error>> {
-        // 实际发送交易逻辑应该在这里实现
-        // 注意：以下为示例逻辑，实际实现需根据substrate-interface库的具体使用方式进行调整
+        // The actual transaction sending logic should be implemented here
+        // Note: The following is example logic, the actual implementation should be adjusted according to the specific usage of the substrate-interface library
         println!("Sending transaction to Bitcoin network: {}", transaction);
-        // 模拟发送交易成功
+        // Simulate successful transaction sending
         Ok(true)
     }
 }
 
-// 定义SolanaClient结构体
+// Define SolanaClient struct
 struct SolanaClient {
     client: RpcClient,
 }
 
 impl SolanaClient {
-    // 连接到Solana节点
+    // Connect to a Solana node
     fn connect(node_url: &str) -> Result<Self, Box<dyn Error>> {
         let client = RpcClient::new(node_url.to_string());
         Ok(SolanaClient { client })
     }
 
-    // 发送交易
+    // Send transaction
     fn send_transaction(&self, transaction: String) -> Result<bool, Box<dyn Error>> {
-        // 使用solana_py的RpcClient发送交易
+        // Use solana_py's RpcClient to send the transaction
         let transaction_bytes = transaction.into_bytes();
         let signature = self.client.send_transaction(&transaction_bytes, RpcSendTransactionConfig::default())?;
         println!("Transaction sent with signature: {}", signature);
@@ -48,14 +48,14 @@ impl SolanaClient {
     }
 }
 
-// 定义Bridge结构体
+// Define Bridge struct
 struct Bridge {
     btc_client: BitcoinClient,
     solana_client: SolanaClient,
 }
 
 impl Bridge {
-    // 初始化桥接
+    // Initialize the bridge
     fn init_bridge(btc_url: &str, solana_url: &str) -> Result<Self, Box<dyn Error>> {
         let btc_client = BitcoinClient::connect(btc_url)?;
         let solana_client = SolanaClient::connect(solana_url)?;
@@ -66,18 +66,18 @@ impl Bridge {
         })
     }
 
-    // 资产转移
+    // Asset transfer
     fn transfer_asset(&self, asset: String, amount: u64, destination: String) -> Result<bool, Box<dyn Error>> {
-        // 这里是资产转移的逻辑
+        // Here is the logic for asset transfer
         let message = format!("Transfer {} of {} to {}", amount, asset, destination);
         println!("{}", message);
 
-        // 模拟资产转移成功
+        // Simulate successful asset transfer
         Ok(true)
     }
 }
 
-// 示例用法
+// Example usage
 fn main() -> Result<(), Box<dyn Error>> {
     let bridge = Bridge::init_bridge("http://example.com/bitcoin", "http://example.com/solana")?;
     bridge.transfer_asset("BTC".to_string(), 100, "SolanaAddress".to_string())?;
